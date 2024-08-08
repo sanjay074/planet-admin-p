@@ -9,12 +9,17 @@ export const NewOrder = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
+
+  // console.log(orderList,"order list from api ");
+  
   useEffect(() => {
     const getProduct = async () => {
       try {
         const result = await GetProductList();
+        console.log(result,"result data from api");
+        
         // Ensure orderList is an array
-        const data = Array.isArray(result.data) ? result.data : [];
+        const data = Array.isArray(result.data.getAllData) ? result.data.getAllData: [];
         setOrderList(data);
       } catch (error) {
         console.log("Facing error in getting data from API", error);
@@ -71,11 +76,13 @@ export const NewOrder = () => {
       <table>
         <thead>
           <tr>
-            <th>Product</th>
+            <th>UserId</th>
             <th>Product ID</th>
-            <th>Price</th>
-            <th>Sale</th>
-            <th>Stock</th>
+            <th>Quantity</th>
+            <th>Address</th>
+            <th>TotalPrice</th>
+            <th>OrderDate</th>
+            <th>Status</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -83,13 +90,17 @@ export const NewOrder = () => {
           {currentItems.map((product) => (
             <tr key={product._id}>
               <td>
-                <img src={product.imageUrl} alt={product.name} />
+                <img src={product.userId} alt={product.name} />
                 {product.name}
+                {product.userId}
               </td>
-              <td>{product._id}</td>
-              <td>Rs {product.basePrice}</td>
-              <td>{product.discountPrice || 'N/A'}</td>
-              <td>{product.stock}</td>
+              <td>{product.orderItems.productId}</td>
+              <td>Rs {product.orderItems.quantity}</td>
+              <td>{product.address}</td>
+              <td>{product.totalPrice || 'N/A'}</td>
+              
+              <td>{product.orderDate}</td>
+              <td>{product.status}</td>
               <td>
                 <button>👁️</button>
                 <button>✏️</button>

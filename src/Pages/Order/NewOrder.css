@@ -8,7 +8,7 @@
   }
   .container2 {
     height: 100vh;
-    min-width: 160%;
+    /* min-width: 160%; */
     height: max-content;
     margin-top: 115px;
     background-color: whitesmoke;

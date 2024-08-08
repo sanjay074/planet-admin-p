@@ -203,7 +203,12 @@ const RecentOrders = () => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-
+  const handalAddnew=()=>{
+       navigate('/AddProduct')
+  }
+  const handaleview=()=>{
+    navigate('/ProductDetails')
+  }
 
   return (
     <div className="container">
@@ -214,7 +219,7 @@ const RecentOrders = () => {
         <button onClick={printPage}>Print</button>
         <input type="text" placeholder="Search" className="search" />
         <button className="delete">Delete</button>
-        <button className="add-new">+ Add New</button>
+        <button className="add-new" onClick={handalAddnew}>+ Add New</button>
       </div>
       <table>
         <thead>
@@ -248,7 +253,7 @@ const RecentOrders = () => {
              
               
               <td >
-                <button>👁️</button>
+                <button onClick={handaleview}>👁️</button>
                 <button>✏️</button>
                 <button>🗑️</button>
               </td>
