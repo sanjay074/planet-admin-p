@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./NewOrder.css";
-import { GetProductList } from "../../Service/Allapi";
+import {NewProductList } from "../../Service/Allapi";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 
@@ -9,17 +9,14 @@ export const NewOrder = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-
-  // console.log(orderList,"order list from api ");
-  
   useEffect(() => {
     const getProduct = async () => {
       try {
-        const result = await GetProductList();
-        console.log(result,"result data from api");
+        const result = await NewProductList();
+        console.log(result, "result data from api");
         
         // Ensure orderList is an array
-        const data = Array.isArray(result.data.getAllData) ? result.data.getAllData: [];
+        const data = Array.isArray(result.data.recentOrder) ? result.data.recentOrder : [];
         setOrderList(data);
       } catch (error) {
         console.log("Facing error in getting data from API", error);
@@ -40,19 +37,19 @@ export const NewOrder = () => {
   const downloadAsTxt = () => {
     const content = orderList
       .map(
-        (product) =>
-          `Product: ${product.name}, Product ID: ${product._id}, Price: Rs ${product.basePrice}, Sale: ${product.discountPrice || 'N/A'}, Stock: ${product.stock}`
+        (order) =>
+          `Order ID: ${order._id}, Address: ${order.address}, Total Price: Rs ${order.totalPrice}`
       )
       .join("\n");
     const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
-    saveAs(blob, "products.txt");
+    saveAs(blob, "orders.txt");
   };
 
   const downloadAsExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(orderList);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Products");
-    XLSX.writeFile(workbook, "products.xlsx");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
+    XLSX.writeFile(workbook, "orders.xlsx");
   };
 
   const printPage = () => {
@@ -87,20 +84,27 @@ export const NewOrder = () => {
           </tr>
         </thead>
         <tbody>
-          {currentItems.map((product) => (
-            <tr key={product._id}>
+          {currentItems.map((order) => (
+            <tr key={order._id}>
+              <td>{order.userId}</td>
               <td>
-                <img src={product.userId} alt={product.name} />
-                {product.name}
-                {product.userId}
+                {order.orderItems.map((item, index) => (
+                  <div key={index}>
+                    {item.productId}
+                  </div>
+                ))}
               </td>
-              <td>{product.orderItems.productId}</td>
-              <td>Rs {product.orderItems.quantity}</td>
-              <td>{product.address}</td>
-              <td>{product.totalPrice || 'N/A'}</td>
-              
-              <td>{product.orderDate}</td>
-              <td>{product.status}</td>
+              <td>
+                {order.orderItems.map((item, index) => (
+                  <div key={index}>
+                    {item.quantity}
+                  </div>
+                ))}
+              </td>
+              <td>{order.address}</td>
+              <td>{order.totalPrice || 'N/A'}</td>
+              <td>{order.orderDate}</td>
+              <td>{order.status}</td>
               <td>
                 <button>👁️</button>
                 <button>✏️</button>

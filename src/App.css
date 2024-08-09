@@ -2,7 +2,7 @@
   display: flex;
   width: 100%;
   height: auto;
-  min-height: 100vh;
+  /* min-height: 100vh; */
   /* min-width: 100%; */
 } 
 
@@ -27,7 +27,7 @@
 } */
 
 
-.header {
+/* .header {
   position: fixed;
   top: 0;
   width: 98%;
@@ -35,12 +35,11 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   padding: 10px 20px;
   z-index: 1000;
-}
+} */
 .sidebar {
   display: flex;
   flex-direction: column;
-  /* max-width: 100%; */
-  /* width: 20%; */
+ 
   max-height: auto;
   background-color: #fff;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);

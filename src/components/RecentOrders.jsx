@@ -1,131 +1,59 @@
 import React, { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
- import "./RecentOrders.css";
- import { useNavigate } from "react-router-dom";
- import { MdOutlineRemoveRedEye } from "react-icons/md";
-// import { getAllProductApi } from "../Service/Allapi";
- 
-const products = [
-  {
-    id: 1,
-    name: "Men Shirts",
-    OrderId: "#757123059",
-    Date:"20/09/2024",
-    Total: 1200,
-    PaymentStatus:"Success",
-    Paymentmethod:"visa",
-    viewDetails:"view",
-    imageUrl: "https://images.pexels.com/photos/931177/pexels-photo-931177.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-  },
-  {
-    id: 2,
-    name: "Men Shirts",
-    OrderId: "#757123059",
-    Date:"20/09/2024",
-    Total: 1200,
-    PaymentStatus:"Success",
-    Paymentmethod:"visa",
-    viewDetails:"view",
-  
-    
-    imageUrl: "https://images.pexels.com/photos/931177/pexels-photo-931177.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-  },
-  {
-    id: 3,
-    name: "Men Shirts",
-    OrderId: "#757123059",
-    Date:"20/09/2024",
-    Total: 1200,
-    PaymentStatus:"Pending",
-    Paymentmethod:"visa",
-    viewDetails:"view",
-  
-    
-    imageUrl: "https://images.pexels.com/photos/931177/pexels-photo-931177.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-  },
-  {
-    id: 4,
-    name: "Men Shirts",
-    OrderId: "#757123059",
-    Date:"20/09/2024",
-    Total: 1200,
-    PaymentStatus:"Pending",
-    Paymentmethod:"visa",
-    viewDetails:"view",
-  
-    
-    imageUrl: "https://images.pexels.com/photos/931177/pexels-photo-931177.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-  },
-  {
-    id: 5,
-    name: "Men Shirts",
-    OrderId: "#757123059",
-    Date:"20/09/2024",
-    Total: 1200,
-    PaymentStatus:"pending",
-    Paymentmethod:"visa",
-    viewDetails:"view",
-  
-    
-    imageUrl: "https://images.pexels.com/photos/931177/pexels-photo-931177.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-  },
-  {
-    id: 6,
-    name: "Men Shirts",
-    OrderId: "#757123059",
-    Date:"20/09/2024",
-    Total: 1200,
-    PaymentStatus:"Success",
-    Paymentmethod:"visa",
-    viewDetails:"view",
-  
-    
-    imageUrl: "https://images.pexels.com/photos/931177/pexels-photo-931177.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-  },
-];
+import "./RecentOrders.css";
+import { useNavigate } from "react-router-dom";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
+import { RecentOrdersDetails } from "../Service/Allapi";
+
 const RecentOrders = () => {
-  const navigate=useNavigate()
-  // const [resentOrder,setResentOrder]=useState([])
-  // console.log(resentOrder,"resent order from api");
+  const navigate = useNavigate();
 
-
-  // useEffect(()=>{
-
-  //   const getData= async()=>{
-  //     const result= await getAllProductApi()
-  //     setResentOrder(result.data)
-  //   }
-
-  //   getData()
-  // },[])
   const [currentPage, setCurrentPage] = useState(1);
+  const [recentOrder, setRecentOrder] = useState([]);
   const itemsPerPage = 5;
+ console.log(recentOrder,"recentOrder the >>>>>>>>");
+ 
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const result = await RecentOrdersDetails();
+        const data = Array.isArray(result.data.myData)
+          ? result.data.myData
+          : [];
+        setRecentOrder(data);
+      } catch (error) {
+        console.error(`Facing problem in getting RecentOrder `, error);
+      }
+    };
+    getData();
+  }, []);
 
   // Calculate total pages
-  const totalPages = Math.ceil(products.length / itemsPerPage);
+  const totalPages = Math.ceil(recentOrder.length / itemsPerPage);
 
   // Get current items
-  const currentItems = products.slice(
+  const currentItems = recentOrder.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
   const downloadAsTxt = () => {
-    const content = products
+    const content = recentOrder
       .map(
-        (product) =>
-          `Product: ${product.name}, Product ID: ${product.productId}, Price: Rs ${product.price}, Sale: ${product.sale}, Stock: ${product.stock}`
+        (order) =>
+          `Order ID: ${order._id}, Total Price: Rs ${order.totalPrice}, Status: ${order.status}`
       )
       .join("\n");
     const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
-    saveAs(blob, "products.txt");
+    saveAs(blob, "orders.txt");
   };
 
   const downloadAsExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(products);
+    const worksheet = XLSX.utils.json_to_sheet(recentOrder);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Products");
-    XLSX.writeFile(workbook, "products.xlsx");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
+    XLSX.writeFile(workbook, "orders.xlsx");
   };
 
   const downloadCSS = () => {
@@ -199,16 +127,19 @@ const RecentOrders = () => {
 
   const printPage = () => {
     window.print();
-  }
+  };
+
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-  const handalAddnew=()=>{
-       navigate('/AddProduct')
-  }
-  const handaleview=()=>{
-    navigate('/ProductDetails')
-  }
+
+  const handleAddNew = () => {
+    navigate("/AddProduct");
+  };
+
+  const handleViewDetails = (orderId) => {
+    navigate(`/OrderDetails/${orderId}`);
+  };
 
   return (
     <div className="container">
@@ -219,7 +150,9 @@ const RecentOrders = () => {
         <button onClick={printPage}>Print</button>
         <input type="text" placeholder="Search" className="search" />
         <button className="delete">Delete</button>
-        <button className="add-new" onClick={handalAddnew}>+ Add New</button>
+        <button className="add-new" onClick={handleAddNew}>
+          + Add New
+        </button>
       </div>
       <table>
         <thead>
@@ -235,25 +168,34 @@ const RecentOrders = () => {
           </tr>
         </thead>
         <tbody>
-          {currentItems.map((product, index) => (
-            <tr key={product.id} className={index % 2 === 0 ? "evenRow" : "oddRow"}>
+          {currentItems.map((order) => (
+            <tr
+              key={order._id}
+              className={order._id % 2 === 0 ? "evenRow" : "oddRow"}
+            >
               <td>
-                <img src={product.imageUrl} alt={product.name} />
-                {product.name}
+                <img src={order.imageUrl || 'default-image-url'} alt={order.name} />
+                {order.name}
               </td>
-              <td>{product.OrderId}</td>
-              <td>{product.Date}</td>
-              <td>Rs {product.Total}</td>
-              <td className={product.PaymentStatus ? "payment-success" : "payment-pending"}>
-                {product.PaymentStatus ? "Success" : "Pending"}
+              <td>{order._id}</td>
+              <td>{new Date(order.orderDate).toLocaleDateString()}</td>
+              <td>Rs {order.totalPrice}</td>
+              <td
+                className={
+                  order.paymentStatus ? "payment-success" : "payment-pending"
+                }
+              >
+                {order.paymentStatus ? "Success" : "Pending"}
               </td>
-              <td>{product.Paymentmethod}</td>
-             
-              <td onClick={()=>navigate("/OrderSummary")} style={{marginLeft:"2rem",cursor:"pointer"}}>{<MdOutlineRemoveRedEye />}</td>
-             
-              
-              <td >
-                <button onClick={handaleview}>👁️</button>
+              <td>{order.paymentMethod}</td>
+              <td
+                onClick={() => handleViewDetails(order._id)}
+                style={{ marginLeft: "2rem", cursor: "pointer" }}
+              >
+                <MdOutlineRemoveRedEye />
+              </td>
+              <td>
+                <button onClick={() => handleViewDetails(order._id)}>👁️</button>
                 <button>✏️</button>
                 <button>🗑️</button>
               </td>
@@ -267,7 +209,7 @@ const RecentOrders = () => {
           <button
             key={index + 1}
             onClick={() => handlePageChange(index + 1)}
-            className={currentPage === index + 1 ? 'active' : ''}
+            className={currentPage === index + 1 ? "active" : ""}
           >
             {index + 1}
           </button>

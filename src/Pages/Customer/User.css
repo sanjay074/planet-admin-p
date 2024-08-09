@@ -13,8 +13,9 @@
   }
   .container4 {
     height: 100vh;
-    min-width: 207%;
-    height: max-content;
+    /* min-width: 207%; */
+    /* height: max-content; */
+    width: 200%;
     margin-top: 115px;
     background-color: whitesmoke;
     color: black;

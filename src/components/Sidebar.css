@@ -1,21 +1,20 @@
-/* Sidebar.css */
-
 .sidebar {
   display: flex;
   flex-direction: column;
-  max-width: 100%;
-  max-height: auto;
+  max-width: 250px;
   background-color: #fff;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   padding: 20px;
   margin-top: 50px;
+  /* position: fixed; */
+  /* height: 100%; */
 }
 
-.sidebar .menu {
+.menu {
   flex: 1;
 }
 
-.sidebar .menu-item {
+.menu-item {
   display: flex;
   align-items: center;
   padding: 10px 15px;
@@ -27,42 +26,42 @@
   font-size: large;
 }
 
-.sidebar .menu-item:hover {
+.menu-item:hover {
   background-color: #457cd6;
 }
 
-.sidebar .menu-item.active {
+.menu-item.active {
   color: #1c0a93;
-  background-color: #e0e7ff; 
+  background-color: #e0e7ff;
 }
 
-.sidebar .menu-item.active .icon {
+.menu-item.active .icon {
   color: #3d2bb6;
 }
 
-.sidebar .menu-item .icon {
+.menu-item .icon {
   margin-right: 10px;
   font-size: 20px;
 }
 
-.sidebar .menu-item .expand-icon {
+.menu-item .expand-icon {
   margin-left: auto;
 }
 
-.sidebar .logout {
+.logout {
   padding: 10px 15px;
   font-size: 16px;
   color: #fff;
   background-color: #333;
   text-align: center;
   border-radius: 4px;
-  margin-bottom: 40rem;
+  margin-bottom: 40px;
   margin-top: 3rem;
   text-decoration: none;
   transition: background-color 0.3s ease;
 }
 
-.sidebar .logout:hover {
+.logout:hover {
   background-color: #555;
 }
 
@@ -89,6 +88,19 @@
 }
 
 .menu-subitem.active {
-  background-color: #727fac; 
-  color: white
+  background-color: #727fac;
+  color: white;
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+  .sidebar {
+    max-width: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
 }

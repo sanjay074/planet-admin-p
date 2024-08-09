@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./OrderHistory.css";
-import { GetProductList } from "../../Service/Allapi";
+import { ProductHistory } from "../../Service/Allapi";
 // import '../assets/Global.css'
 
 export const OrderHistory = () => {
@@ -11,7 +11,7 @@ export const OrderHistory = () => {
   useEffect(() => {
     const getAllHistory = async () => {
       try {
-        const result = await GetProductList();
+        const result = await ProductHistory()
         console.log(result, "result data from api");
 
         const data = Array.isArray(result.data.getAllData)
@@ -157,8 +157,16 @@ export const OrderHistory = () => {
                 <img src={product.imageUrl} alt={product.name} />
                 {product.userId}
               </td>
-              <td>{product.productId}</td>
-              <td>{product.quantity}</td>
+              <td>{product.orderItems.map((item, index) => (
+                  <div key={index}>
+                    {item.productId}
+                  </div>
+                ))}</td>
+              <td>{product.orderItems.map((item, index) => (
+                  <div key={index}>
+                    {item.quantity}
+                  </div>
+                ))}</td>
               <td>{product.address}</td>
               <td>Rs {product.totalPrice}</td>
               <td>{product.orderDate}</td>
