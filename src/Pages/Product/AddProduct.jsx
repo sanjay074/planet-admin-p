@@ -78,7 +78,7 @@ export const AddProduct = () => {
       <form>
         <div className="form-sections">
           <div className="form-left">
-            <div className="form-group">
+            <div className="form-group1">
               <TextField
                 name="name"
                 label="Product Name"
@@ -148,7 +148,7 @@ export const AddProduct = () => {
                 <MenuItem value="brand2">Brand 2</MenuItem>
               </Select>
             </FormControl>
-            <div className="form-group">
+            <div className="form-group1">
               <TextField
                 name="Description"
                 label="Description"

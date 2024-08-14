@@ -8,11 +8,14 @@ export const User = () => {
   const [userList, setUserList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+// console.log(userList,"userList from api ,,,,,,,,");
 
   useEffect(() => {
     const getData = async () => {
       try {
         const result = await GetAllUserList();
+        // console.log(result,",,,,,,,,,,,,,,...");
+        
         const data = Array.isArray(result.data.alluser) ? result.data.alluser : [];
         setUserList(data);
       } catch (error) {
@@ -125,13 +128,13 @@ export const User = () => {
 
   return (
     <div className="container4">
-      <div className="actions">
+      <div className="actions2">
         <button onClick={downloadCSS}>Css</button>
         <button onClick={downloadAsTxt}>Txt</button>
         <button onClick={downloadAsExcel}>Excel</button>
         <button onClick={printPage}>Print</button>
         <input type="text" placeholder="Search" className="search" />
-        <button className="delete">Delete</button>
+        {/* <button className="delete">Delete</button> */}
         <button className="add-new">+ Add New</button>
       </div>
       <table>
@@ -157,7 +160,7 @@ export const User = () => {
                 <td>
                   <button>👁️</button>
                   <button>✏️</button>
-                  <button>🗑️</button>
+                  <button>❌</button>
                 </td>
               </tr>
             ))

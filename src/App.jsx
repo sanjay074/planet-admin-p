@@ -12,7 +12,8 @@ import { AddProduct } from './Pages/Product/AddProduct';
 import { ProductList } from './Pages/Product/ProductList';
 // import { Categories } from './Pages/Product/Categories';
 import { NewOrder } from './Pages/Order/NewOrder';
-import { OrderHistory } from './Pages/Order/OrderHistory';
+import { OrderHistory } from './Pages/Order/OrderHistory/OrderHistory';
+
 import { InsertOffer } from './Pages/HotOffer/InsertOffer';
 import { ViewOffer } from './Pages/HotOffer/ViewOffer';
 import { User } from './Pages/Customer/User';
@@ -23,6 +24,10 @@ import Header from './components/Header';
 import { Addcategory } from './Pages/Product/Category/Addcategory';
 import { CategoryList } from './Pages/Product/Category/CategoryList';
 import { ProductDetails } from './Pages/Product/ProductDetails';
+import { OrderDetails } from './Pages/Order/OrderDetails';
+import { ViewNewOrderDetails } from './Pages/Order/ViewNewOrderDetails';
+import { EditOrderHistory } from './Pages/Order/OrderHistory/EditOrderHistory';
+import { ViewOrderList } from './Pages/Order/OrderHistory/ViewOrderList';
 
 
 const App = () => {
@@ -48,6 +53,10 @@ const App = () => {
                   <Route path='/CategoryList' element={<CategoryList/>}/>
                   {/* <Route path='/Categories' element={<Categories/>}/> */}
                   <Route path='/NewOrder' element={<NewOrder/>}/>
+                  <Route path='/OrderDetails/:id'element={<OrderDetails/>}/>
+                  <Route path='/EditOrderHistory/:id' element={<EditOrderHistory/>}/>
+                  <Route path='/ViewOrderList/:id' element={<ViewOrderList/>}/>
+                  <Route path='/ViewNewOrderDetails/:id' element={<ViewNewOrderDetails/>}/>
                   <Route path='/OrderHistory' element={<OrderHistory/>}/>
                   <Route path='/TrackOrder' element={<TrackOrder/>}/>
                   <Route path='/OrderSummary' element={<OrderSummary/>}/>

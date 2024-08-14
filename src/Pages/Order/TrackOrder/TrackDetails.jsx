@@ -31,7 +31,7 @@ export const TrackDetails = () => {
     return (
       <div className="track-details">
       <div className="header2">
-        <img src="path_to_image.jpg" alt="Product" className="product-image" />
+        <img src="https://th.bing.com/th/id/OIP.6HDxwTfobW1KpePYGti8CQAAAA?rs=1&pid=ImgDetMain" alt="Product" className="product-image" />
         <div className="order-info">
           <h3>Your Order</h3>
           <p><strong>Order Number:</strong> #JH2033</p>

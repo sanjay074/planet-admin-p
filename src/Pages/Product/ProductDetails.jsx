@@ -5,14 +5,17 @@ import "./ProductDetails.css";
 
 export const ProductDetails = () => {
   const { id } = useParams();
+  // console.log(id, "id from the db.>>>>..");
+
   const [product, setProduct] = useState({});
-  console.log(product, "product details");
+  // console.log(product, "product details");
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const result = await GetSingleProduct(id);
-        // Ensure we handle case where result.data might not have singleData
-        setProduct(result.data);
+        // console.log(result, "result data /////////");
+
+        setProduct(result.data.record);
       } catch (error) {
         console.error("Error fetching product details:", error);
       }
@@ -22,24 +25,20 @@ export const ProductDetails = () => {
   }, []);
 
   return (
-
-    
     <div className="product-details-container1">
       <div className="product-details-left1">
-
-      
-        <img
-          src={product.images || "default-image.jpg"}
-          alt={product.name || "Product Image"}
-          className="product-image1"
-        />
+      <img
+      src={(product.images && Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : "default-image.jpg")}
+      alt={product.name || "Product Image"}
+      className="product-image1"
+    />
         <div
-          className={`stock-status ${
-            product.stock ? "in-stock" : "out-of-stock"
-          }`}
-        >
-          {product.stock ? "In Stock" : "Out Of Stock"}
-        </div>
+      className={`stock-status ${
+        product.stock ? "in-stock" : "out-of-stock"
+      }`}
+    >
+      {product.stock ? "In Stock" : "Out Of Stock"}
+    </div>
       </div>
       <div className="product-details-right1">
         <div className="headline-box">
@@ -74,7 +73,6 @@ export const ProductDetails = () => {
         >
           Go Back
         </button>
-       
       </div>
     </div>
   );

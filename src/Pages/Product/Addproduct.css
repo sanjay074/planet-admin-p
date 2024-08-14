@@ -1,5 +1,5 @@
 .product-form1 {
-  width: 111%;
+  width: 138%;
   height: 100vh; 
   /* margin: ;
   /* min-width: 100%; */
@@ -27,7 +27,7 @@
   flex: 1;
 }
 
-.form-group {
+.form-group1 {
   margin-bottom: 20px;
   position: relative;
 }

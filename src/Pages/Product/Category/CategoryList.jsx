@@ -44,9 +44,9 @@ export const CategoryList = () => {
                 <td><img src={category.image} alt={category.title} /></td>
                 <td>{category.description}</td>
                 <td className="action-buttons">
-                  <button>View</button>
-                  <button>Edit</button>
-                  <button>Delete</button>
+                  <button>👁️</button>
+                  <button>✏️</button>
+                  <button>❌</button>
                 </td>
               </tr>
             ))}
@@ -77,9 +77,9 @@ export const CategoryList = () => {
                   <td><img src={subcategory.image} alt={subcategory.title} /></td>
                   <td>{subcategory.description}</td>
                   <td className="action-buttons">
-                    <button>View</button>
-                    <button>Edit</button>
-                    <button>Delete</button>
+                    <button>👁️</button>
+                    <button>✏️</button>
+                    <button>❌</button>
                   </td>
                 </tr>
               ))}

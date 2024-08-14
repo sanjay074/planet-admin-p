@@ -1,15 +1,54 @@
 // src/Dashboard.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Dashboard.css";
 import Chart from "./Charts";
 import RecentOrders from "./RecentOrders";
+import { GetAllUserList, ProductHistory } from "../Service/Allapi";
 
 const Dashboard = () => {
+  const [totalUser, setTotalUser] = useState("");
+  const [totalOrder, setTotalOrder] = useState("");
+  // console.log(totalOrder, "total Order list ");
+  console.log(totalOrder,"total historyf ");
+  
+
+  useEffect(() => {
+    const getTotalUser = async () => {
+      try {
+        const result = await GetAllUserList();
+        // console.log(result,"result data from apuiiiiiiiii");
+        
+       // console.log(result.data.totalUser, "total user List ");
+
+        setTotalUser(result.data.totalUser);
+      } catch (error) {
+        console.error("facing problem in getting totalUser from api", error);
+      }
+    };
+    getTotalUser();
+  }, []);
+
+  useEffect(() => {
+    const getTotalorder = async () => {
+      try {
+        const result = await ProductHistory();
+        console.log(result,"total result history ");
+        
+        setTotalOrder(result.data.total);
+      } catch (error) {
+        console.error(
+          "facing problem in getting data from totalhistory ",
+          error
+        );
+      }
+    };
+    getTotalorder();
+  }, []);
   return (
     <>
       <div className="dashboard">
         <h3 className="h4">Good Morning </h3>
-        <p>here the today update </p>
+        <p className="p1">here the today update </p>
         <div className="stats">
           <div className="stat">
             <div className="stat-header">
@@ -26,7 +65,7 @@ const Dashboard = () => {
               Total Users
               <span className="stat-trend up">70.5%</span>
             </div>
-            <div className="stat-value">78,250</div>
+            <div className="stat-value">{totalUser}</div>
             <div className="stat-footer">You made an extra 8,900 this year</div>
           </div>
           <div className="stat">
@@ -34,7 +73,7 @@ const Dashboard = () => {
               Total Order
               <span className="stat-trend down">27.4%</span>
             </div>
-            <div className="stat-value">18,800</div>
+            <div className="stat-value">{totalOrder}</div>
             <div className="stat-footer">You made an extra 1,943 this year</div>
           </div>
           <div className="stat">
@@ -52,8 +91,8 @@ const Dashboard = () => {
       <div>
         <Chart />
       </div>
-      <div >
-        <div >
+      <div>
+        <div>
           <RecentOrders />
         </div>
       </div>

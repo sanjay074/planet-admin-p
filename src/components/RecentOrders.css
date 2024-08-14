@@ -1,11 +1,8 @@
-.payment-success {
-  color: green;
-  border-radius: 5px;
-  
-}
+/* RecentOrders.css */
 
-.payment-pending {
-  color: red;
+.container {
+  width: 80%;
+  margin: 0 auto;
 }
 
 .actions {
@@ -60,6 +57,31 @@ img {
   vertical-align: middle;
 }
 
+.product-details {
+  display: flex;
+  align-items: center;
+}
+
+.product-details img {
+  margin-right: 10px;
+ 
+}
+
+.payment-success {
+  color: green;
+  border-radius: 5px;
+  padding: 2px 5px;
+  background-color: #d4edda; 
+}
+
+.payment-pending {
+  color: red;
+  border-radius: 5px;
+  padding: 2px 5px;
+  
+}
+
+
 .pagination {
   display: flex;
   justify-content: center;
@@ -77,4 +99,3 @@ img {
   background-color: purple;
   color: white;
 }
-

@@ -49,14 +49,14 @@ export const DeleteProductDetails = async (id) => {
 export const NewProductList = async () => {
   try {
     const responce = await axiosInstance.get("/order/getNewOrder");
-    console.log(`getting data from api >>`, responce);
+    // console.log(`getting data from api >>`, responce);
     return responce;
   } catch (error) {
     console.log(`facing error in getallProductData`, error);
     throw Error;
   }
 };
-
+// get product History
 export const ProductHistory = async () => {
   try {
     const responce = await axiosInstance.get("/order/getAllorder");
@@ -65,17 +65,19 @@ export const ProductHistory = async () => {
     console.error(`facing problem in getting ProductHistory`, error);
   }
 };
-        export const RecentOrdersDetails= async()=>{
-    try{
-       const responce = await axiosInstance.get('/order/getRecentOrder')
-       console.log(responce,"responce data from api");
-       
-       return responce 
-    }catch(error){
-  console.error(`facing problem in getting RecentOrder`,error)
-    }
-}
 
+// get  RecentOrder
+export const RecentOrdersDetails = async () => {
+  try {
+    const responce = await axiosInstance.get("/order/getRecentOrder");
+    //  console.log(responce,"responce data from api");
+
+    return responce;
+  } catch (error) {
+    console.error(`facing problem in getting RecentOrder`, error);
+  }
+};
+// get all user list
 export const GetAllUserList = async () => {
   try {
     const responce = await axiosInstance.get("/userDetails/alluserDetails");
@@ -86,3 +88,30 @@ export const GetAllUserList = async () => {
     console.error("facing error in get all userlist ", error);
   }
 };
+//delete orderlist 
+export const DeleteOrderList = async (id) => {
+  try {
+    const responce = await axiosInstance.delete(
+      `/order/deleteSingleItem/${id}`
+    );
+    console.log(responce, "responce data ");
+
+    return responce;
+  } catch (error) {
+    console.error(
+      "facing the problem in the getting data from deleteone",
+      error
+    );
+  }
+};
+//view orderlist 
+
+export const ViewOrderList=async(id)=>{
+  try{
+    const responce= await axiosInstance.get(`/order/getSingleOrder/${id}`)
+    return responce 
+  }catch(error)
+  {
+    console.error(`facing problem in viewOrderList from api `,error)
+  }
+}

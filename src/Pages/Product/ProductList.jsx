@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import "./ProductList.css";
-import { DeleteProductDetails, getAllProductApi } from "../../Service/Allapi";
+import {  DeleteProductDetails, getAllProductApi } from "../../Service/Allapi";
 import { NavLink, useNavigate } from "react-router-dom";
 
 export const ProductList = () => {
@@ -91,6 +91,7 @@ export const ProductList = () => {
   };
   const handaleDelete = async (id) => {
     let data = await DeleteProductDetails(id);
+      // console.log(data,"getting data ...>>>.");
 
     setProductList(productList.filter((item, index) => item._id !== id));
   };
@@ -139,10 +140,16 @@ export const ProductList = () => {
               >
                 <td>
                   <img
-                    src={product.images[0] || "default-image.jpg"}
+                    src={
+                      product.images &&
+                      Array.isArray(product.images) &&
+                      product.images.length > 0
+                        ? product.images[0]
+                        : "default-image.jpg"
+                    }
                     alt={product.name || "Default Name"}
                   />
-                  {product.name}
+                  {product.name || "No Name Available"}
                 </td>
                 <td>{product._id}</td>
                 <td>Rs {product.basePrice}</td>
@@ -153,7 +160,7 @@ export const ProductList = () => {
                     👁️
                   </button>
 
-                  <button onClick={() => handaleDelete(product._id)}>🗑️</button>
+                  <button onClick={() => handaleDelete(product._id)}>❌</button>
                 </td>
               </tr>
             ))

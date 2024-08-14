@@ -1,13 +1,13 @@
 .container1 {
     /* max-width: 1400px; */
-    width: 135%;
+    width: 150%;
     /* position: absolute; */
-    height: max-content;
-    margin-top: 112px;
+    height: 100vh;
+    margin-top: 125px;
     background-color: whitesmoke;
     color: black;
     /* overflow-y: auto; */
-    margin-left: 5px;
+    /* margin-left: 5px; */
   }
   
   .actions {

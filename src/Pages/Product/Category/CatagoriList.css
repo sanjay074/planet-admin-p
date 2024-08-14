@@ -2,10 +2,11 @@
 
 .category-page {
   padding: 20px;
-  width: 190%;
+  width: 203%;
   height: 100vh;
   background-color: #f2f2f2;
   color: black;
+  margin-top: 30px;
 }
 
 .category-header {

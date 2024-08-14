@@ -1,71 +1,74 @@
-.slider-form-container {
-    width: 350%;
-    /* max-width: 600px; */
-    margin-top: 50px;
-    height: auto;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    color: black;
-    
+.form-container8 {
+  width: 475%;
+  /* max-width: 600px; */
+  height: 100vh;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #fff;
+  color: black;
+  margin-top: 40px;
+}
 
-  }
-  
-  .slider-form-header {
-    background-color:#8231D3;
-    color: white;
-    /* padding: 5px; */
-    text-align: center;
-    border-radius: 8px 8px 0 0;
-  }
-  
-  .slider-form {
-    padding: 20px;
-   
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-    height: 100px;
-    width: 30%;
-    color: black;
-    border-radius: 1px solid black;
-    display: flex;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 5px;
-    
-  }
-  
-  
-  .form-group input[type="text"],
-  .form-group input[type="file"] {
-    width: 100%;
-    padding: 8px;
-    height: 50px;
-    box-sizing: border-box;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    /* background-color: yellow; */
-  }
-  
-  .submit-button01 {
-    display: block;
-    /* margin-top: 100px; */
-    width: 100%;
-    padding: 10px;
-    background-color: #8231D3;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16p
-  }
-  
-  .submit-button01:hover {
-    background-color: #5a2ea6;
-  }
-  
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  background-color: rgb(173, 205, 233);
+  border-radius: 5px;
+  /* padding: 10px; */
+  color: black;
+}
+
+h2:hover {
+  background-color: rgb(147, 187, 223);
+}
+
+.form-group8 {
+  margin-bottom: 20px;
+}
+
+.upload-images8 {
+  margin-bottom: 20px;
+}
+.upload-label8 {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.upload-placeholder8 {
+  color: #aaa;
+}
+.upload-box8 {
+  width: 150px;
+  height: 150px;
+  border: 1px solid #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  /* margin: 0 auto;  */
+}
+
+.upload-preview8 {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+}
+
+.submit-button8 {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #6c63ff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  text-align: center;
+}
+
+.submit-button8:hover {
+  background-color: #5a52e5;
+}

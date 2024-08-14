@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Sidebar.css";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   FaHome,
   FaBoxOpen,
@@ -9,6 +9,7 @@ import {
   FaUsers,
   FaChevronRight,
   FaChevronDown,
+  FaSignOutAlt, // Added for Logout icon
 } from "react-icons/fa";
 
 const Sidebar = () => {
@@ -17,6 +18,8 @@ const Sidebar = () => {
   const [hotOfferDropdown, setOfferDropdown] = useState(false);
   const [customerDropdown, setCustomerDropdown] = useState(false);
   const [categoryDropdown, setCategoryDropdown] = useState(false);
+
+  const navigate = useNavigate();
 
   const toggleCategoryDropdown = () => {
     setCategoryDropdown(!categoryDropdown);
@@ -36,6 +39,11 @@ const Sidebar = () => {
 
   const toggleProductsDropdown = () => {
     setProductsDropdown(!productsDropdown);
+  };
+
+  const handleLogout = () => {
+    
+    //navigate("/login"); 
   };
 
   return (
@@ -172,7 +180,10 @@ const Sidebar = () => {
             </NavLink>
           </div>
         )}
-        
+        <div className="menu-item" onClick={handleLogout}>
+          <FaSignOutAlt className="icon" />
+          Logout
+        </div>
       </div>
     </div>
   );

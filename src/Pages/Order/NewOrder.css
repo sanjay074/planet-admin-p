@@ -1,68 +1,123 @@
 .offers-container1 {
-    width: 100%;
-    /* max-width: 1200px; */
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-  }
-  .container2 {
-    height: 100vh;
-    /* min-width: 160%; */
-    height: max-content;
-    margin-top: 115px;
-    background-color: whitesmoke;
-    color: black;
-    
-    margin-left: 5px;
-  }
-  
-  .offers-header {
-    background-color: purple;
-    color: white;
-    padding: 10px;
-    text-align: center;
-    border-radius: 8px 8px 0 0;
-  }
-  
-  .offers-list {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    padding: 20px;
-  }
-  
-  .offer-card {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin: 10px;
-    padding: 10px;
-    width: 300px;
-    text-align: center;
-  }
-  
-  .offer-image {
-    width: 100%;
-    border-radius: 8px;
-  }
-  
-  .offer-actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-  
-  .offer-actions button {
-    background-color: purple;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .offer-actions button:hover {
-    background-color: #5a2ea6;
-  }
-  
+  width: auto;
+  height: auto;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.container2 {
+  height: max-content;
+  margin-top: 115px;
+  background-color: whitesmoke;
+  color: black;
+  margin-left: 5px;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.actions button, .actions .search {
+  margin-right: 10px;
+}
+
+.search {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.delete, .add-new {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete {
+  background-color: red;
+  color: white;
+}
+
+.add-new {
+  background-color: green;
+  color: white;
+}
+.address-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.address-table th, .address-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.address-table th {
+  background-color: #f4f4f4;
+}
+
+.address-table .address-cell {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.address-table .address-cell:hover {
+  overflow: visible;
+  white-space: normal;
+}
+
+.product-details {
+  text-align: center;
+}
+
+.product-img {
+  width: 100px; /* Adjust as needed */
+  height: 100px; /* Adjust as needed */
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 5px;
+}
+
+.product-name {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.product-quantity {
+  font-size: 14px;
+  color: #555;
+  display: flex;
+  flex-direction: row;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  margin: 0 5px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background-color: purple;
+  color: white;
+}
+
+.pagination button:hover {
+  background-color: #ddd;
+}

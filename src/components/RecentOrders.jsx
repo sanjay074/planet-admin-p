@@ -12,8 +12,7 @@ const RecentOrders = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [recentOrder, setRecentOrder] = useState([]);
   const itemsPerPage = 5;
- console.log(recentOrder,"recentOrder the >>>>>>>>");
- 
+
   useEffect(() => {
     const getData = async () => {
       try {
@@ -23,7 +22,7 @@ const RecentOrders = () => {
           : [];
         setRecentOrder(data);
       } catch (error) {
-        console.error(`Facing problem in getting RecentOrder `, error);
+        console.error("Facing problem in getting RecentOrder", error);
       }
     };
     getData();
@@ -137,9 +136,9 @@ const RecentOrders = () => {
     navigate("/AddProduct");
   };
 
-  const handleViewDetails = (orderId) => {
-    navigate(`/OrderDetails/${orderId}`);
-  };
+  // const handleViewDetails = (orderId) => {
+  //   navigate(`/OrderDetails/${orderId}`);
+  // };
 
   return (
     <div className="container">
@@ -149,77 +148,108 @@ const RecentOrders = () => {
         <button onClick={downloadAsExcel}>Excel</button>
         <button onClick={printPage}>Print</button>
         <input type="text" placeholder="Search" className="search" />
-        <button className="delete">Delete</button>
         <button className="add-new" onClick={handleAddNew}>
           + Add New
         </button>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Order ID</th>
-            <th>Date</th>
-            <th>Total</th>
-            <th>Payment Status</th>
-            <th>Payment Method</th>
-            <th>View Details</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentItems.map((order) => (
-            <tr
-              key={order._id}
-              className={order._id % 2 === 0 ? "evenRow" : "oddRow"}
-            >
-              <td>
-                <img src={order.imageUrl || 'default-image-url'} alt={order.name} />
-                {order.name}
-              </td>
-              <td>{order._id}</td>
-              <td>{new Date(order.orderDate).toLocaleDateString()}</td>
-              <td>Rs {order.totalPrice}</td>
-              <td
-                className={
-                  order.paymentStatus ? "payment-success" : "payment-pending"
-                }
-              >
-                {order.paymentStatus ? "Success" : "Pending"}
-              </td>
-              <td>{order.paymentMethod}</td>
-              <td
-                onClick={() => handleViewDetails(order._id)}
-                style={{ marginLeft: "2rem", cursor: "pointer" }}
-              >
-                <MdOutlineRemoveRedEye />
-              </td>
-              <td>
-                <button onClick={() => handleViewDetails(order._id)}>👁️</button>
-                <button>✏️</button>
-                <button>🗑️</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
 
-      <div className="pagination">
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            key={index + 1}
-            onClick={() => handlePageChange(index + 1)}
-            className={currentPage === index + 1 ? "active" : ""}
-          >
-            {index + 1}
-          </button>
-        ))}
-        {currentPage < totalPages && (
-          <button onClick={() => handlePageChange(currentPage + 1)}>
-            Next
-          </button>
-        )}
-      </div>
+      {recentOrder.length === 0 ? (
+        <p>No available data</p>
+      ) : (
+        <>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Payment Status</th>
+                <th>Payment Method</th>
+                <th>View Details</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentItems.map((order) => (
+                <tr
+                  key={order._id}
+                  className={order._id % 2 === 0 ? "evenRow" : "oddRow"}
+                >
+                  <td>
+                  {order.orderItems.map((item, index) => (
+                    <div key={index} className="product-details">
+                      {item.productId &&
+                        item.productId.images &&
+                        item.productId.images.length > 0 && (
+                          <div>
+                            <img
+                              src={item.productId.images[0]}
+                              alt={item.productId.name}
+                              
+                            />
+                            <div className="product-name">
+                              {item.productId.name}
+                            </div>
+                          </div>
+                        )}
+                    </div>
+                  ))}
+                </td>
+
+                  <td>{order._id}</td>
+                  <td>{new Date(order.orderDate).toLocaleDateString()}</td>
+                  <td>Rs {order.totalPrice}</td>
+                  <td
+                    className={
+                      order.paymentStatus
+                        ? "payment-success"
+                        : "payment-pending"
+                    }
+                  >
+                    {order.paymentStatus ? "Success" : "Pending"}
+                  </td>
+                  <td>{order.paymentMethod}</td>
+                  <td
+                    onClick={() => handleViewDetails(order._id)}
+                    style={{
+                      // marginLeft: "4rem",
+                      cursor: "pointer",
+                      fontSize: "24px",
+                    }}
+                  >
+                    <MdOutlineRemoveRedEye style={{ fontSize: "24px" }} />{" "}
+                  </td>
+                  <td>
+                    <button onClick={() => handleViewDetails(order._id)}>
+                      👁️
+                    </button>
+                    <button>✏️</button>
+                    <button>❌</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <div className="pagination">
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => handlePageChange(index + 1)}
+                className={currentPage === index + 1 ? "active" : ""}
+              >
+                {index + 1}
+              </button>
+            ))}
+            {currentPage < totalPages && (
+              <button onClick={() => handlePageChange(currentPage + 1)}>
+                Next
+              </button>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 };

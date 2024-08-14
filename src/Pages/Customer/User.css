@@ -5,22 +5,23 @@
      margin-left: 5px;
    } 
    */
-  .actions {
+  .actions2 {
     display: flex;
     justify-content: space-between;
     align-items: center;
     /* margin-bottom: 20px; */
+    margin-top: -45px;
   }
   .container4 {
     height: 100vh;
     /* min-width: 207%; */
     /* height: max-content; */
-    width: 200%;
-    margin-top: 115px;
+    width: 232%;
+    margin-top: 112px;
     background-color: whitesmoke;
     color: black;
     
-    margin-left: 5px;
+    /* margin-left: 5px; */
   }
   
   .actions button, .actions input {
