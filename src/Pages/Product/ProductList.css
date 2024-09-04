@@ -1,6 +1,6 @@
 .container1 {
     /* max-width: 1400px; */
-    width: 150%;
+    width: 135%;
     /* position: absolute; */
     height: 100vh;
     margin-top: 125px;
@@ -26,11 +26,11 @@
     cursor: pointer;
   }
   
-  .search {
+   .search {
     flex-grow: 1;
     padding: 10px;
     border-radius: 5px;
-  }
+  } 
   
   .delete {
     background-color: red;

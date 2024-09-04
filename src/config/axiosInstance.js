@@ -2,7 +2,7 @@ import axios from "axios";
 import React from 'react'
 
 const axiosInstance =axios.create({
-    baseURL:'http://139.59.83.59:4000/api/v1',
+    baseURL:'https://planetapi.akshtest.xyz/api/v1',
     headers:{
         'Content-Type':
         'application/json'

@@ -1,8 +1,14 @@
 /* RecentOrders.css */
 
 .container {
-  width: 80%;
-  margin: 0 auto;
+  max-height: auto;
+   width: 110%;
+  height: max-content;
+  margin-top: 60px;
+  background-color: whitesmoke;
+  color: black;
+  
+  margin-left: 15px;
 }
 
 .actions {
@@ -19,11 +25,11 @@
   cursor: pointer;
 }
 
-.search {
+/* .search {
   flex-grow: 1;
   padding: 10px;
   border-radius: 5px;
-}
+} */
 
 .delete {
   background-color: red;

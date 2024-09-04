@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from "react";
 import "./OrderHistory.css";
-import { ProductHistory } from "../../../Service/Allapi";
-import { saveAs } from "file-saver"; // Import file-saver for download functionalities
-import * as XLSX from "xlsx"; // Import xlsx for Excel download
+import { DeleteOrderHistory, ProductHistory } from "../../../Service/Allapi";
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
 import { useNavigate } from "react-router-dom";
 
 export const OrderHistory = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [orderHistory, setOrderHistory] = useState([]);
   const itemsPerPage = 5;
-  const navigate=useNavigate()
+  const navigate = useNavigate();
+
   useEffect(() => {
     const getAllHistory = async () => {
       try {
         const result = await ProductHistory();
-        const data = Array.isArray(result.data.getAllData)
+        const data = Array.isArray(result?.data?.getAllData)
           ? result.data.getAllData
           : [];
         setOrderHistory(data);
@@ -25,20 +26,29 @@ export const OrderHistory = () => {
     getAllHistory();
   }, []);
 
-  // Calculate total pages
   const totalPages = Math.ceil(orderHistory.length / itemsPerPage);
-
-  // Get current items
   const currentItems = orderHistory.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
   const downloadAsTxt = () => {
+    if (orderHistory.length === 0) {
+      alert("No data available to download.");
+      return;
+    }
     const content = orderHistory
       .map(
         (order) =>
-          `Order ID: ${order._id}, User ID: ${order.userId}, Total Price: Rs ${order.totalPrice}, Order Date: ${order.orderDate}, Status: ${order.status}, Address: ${order.address.name}, ${order.address.mobile}, ${order.address.email}, ${order.address.Pincode}, ${order.address.Landmark}, ${order.address.district}, ${order.address.state}`
+          `Order ID: ${order?._id || "N/A"}, Product Name: ${order?.orderItems
+            .map((item) => item?.productId?.name || "N/A")
+            .join(", ")}, Total Price: Rs ${order?.totalPrice || "N/A"}, Order Date: ${
+            order?.orderDate ? new Date(order.orderDate).toLocaleDateString() : "N/A"
+          }, Status: ${order?.status || "N/A"}, Address: ${order?.address?.name || "N/A"}, ${
+            order?.address?.mobile || "N/A"
+          }, ${order?.address?.email || "N/A"}, ${order?.address?.Pincode || "N/A"}, ${
+            order?.address?.Landmark || "N/A"
+          }, ${order?.address?.district || "N/A"}, ${order?.address?.state || "N/A"}`
       )
       .join("\n");
     const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
@@ -46,20 +56,28 @@ export const OrderHistory = () => {
   };
 
   const downloadAsExcel = () => {
+    if (orderHistory.length === 0) {
+      alert("No data available to download.");
+      return;
+    }
     const worksheet = XLSX.utils.json_to_sheet(
       orderHistory.map((order) => ({
-        OrderID: order._id,
-        UserID: order.userId,
-        TotalPrice: order.totalPrice,
-        OrderDate: order.orderDate,
-        Status: order.status,
-        AddressName: order.address.name,
-        AddressMobile: order.address.mobile,
-        AddressEmail: order.address.email,
-        AddressPincode: order.address.Pincode,
-        AddressLandmark: order.address.Landmark,
-        AddressDistrict: order.address.district,
-        AddressState: order.address.state,
+        OrderID: order?._id || "N/A",
+        ProductName: order?.orderItems
+          .map((item) => item?.productId?.name || "N/A")
+          .join(", "),
+        TotalPrice: order?.totalPrice || "N/A",
+        OrderDate: order?.orderDate
+          ? new Date(order.orderDate).toLocaleDateString()
+          : "N/A",
+        Status: order?.status || "N/A",
+        AddressName: order?.address?.name || "N/A",
+        AddressMobile: order?.address?.mobile || "N/A",
+        AddressEmail: order?.address?.email || "N/A",
+        AddressPincode: order?.address?.Pincode || "N/A",
+        AddressLandmark: order?.address?.Landmark || "N/A",
+        AddressDistrict: order?.address?.district || "N/A",
+        AddressState: order?.address?.state || "N/A",
       }))
     );
     const workbook = XLSX.utils.book_new();
@@ -146,15 +164,26 @@ export const OrderHistory = () => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-   const handalViewHistory=async(id)=>{
-    navigate(`/ViewOrderList/${id}`)
-   }
-   const handalEditHistory= async(id)=>{
-    navigate(`/EditOrderHistory/${id}`)
-   }
-  const handalDeleteHistory= ()=>{
 
-  }
+  const handalViewHistory = (id) => {
+    navigate(`/ViewOrderList/${id}`);
+  };
+
+  // const handalEditHistory = (id) => {
+  //   navigate(`/EditOrderHistory/${id}`);
+  // };
+
+  const handalDeleteHistory = async(id) => {
+    const isConfirm=window.confirm(" are you sure you want to delete Order")
+    
+    if(isConfirm){
+      const deleteData=await DeleteOrderHistory(id)
+    
+      setOrderHistory(orderHistory.filter((item)=>item._id !==id))
+    }
+   
+  };
+
   return (
     <div className="container3">
       <div className="actions1">
@@ -163,111 +192,108 @@ export const OrderHistory = () => {
         <button onClick={downloadAsExcel}>Excel</button>
         <button onClick={printPage}>Print</button>
         <input type="text" placeholder="Search" className="search" />
-        {/* <button className="delete">Delete</button> */}
         <button className="add-new">+ Add New</button>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>UserId</th>
-            <th>OrderID</th>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Address</th>
-            <th>Total Price</th>
-            <th>Order Date</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentItems.map((order) => (
-            <tr key={order._id}>
-              <td>{order.userId}</td>
-              <td>{order._id}</td>
-              <td>
-                <td>
-                  {order.orderItems.map((item, index) => (
-                    <div key={index} className="product-image-name">
-                      {item.productId &&
-                      item.productId.images &&
-                      item.productId.images.length > 0 ? (
-                        <>
+      {orderHistory.length === 0 ? (
+        <div className="no-data-message">No data available.</div>
+      ) : (
+        <>
+          <table>
+            <thead>
+              <tr>
+                <th>Product Name</th>
+                <th>OrderID</th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Address</th>
+                <th>Total Price</th>
+                <th>Order Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentItems.map((order) => (
+                <tr key={order?._id}>
+                  <td>
+                    {order?.orderItems.map((item) => (
+                      <div key={item?._id}>{item?.productId?.name || "N/A"}</div>
+                    ))}
+                  </td>
+                  <td>{order?._id || "N/A"}</td>
+                  <td>
+                    {order?.orderItems.map((item, index) => (
+                      <div key={index} className="product-image-name">
+                        {item?.productId?.images && item.productId.images.length > 0 ? (
                           <img
                             src={item.productId.images[0]}
-                            alt={item.productId.name}
+                            alt={item?.productId?.name || "No image"}
                           />
-                          <div className="product-name">
-                            {item.productId.name}
-                          </div>
-                        </>
-                      ) : (
-                        <div>No image available</div>
-                      )}
+                        ) : (
+                          <div>No image available</div>
+                        )}
+                      </div>
+                    ))}
+                  </td>
+                  <td>
+                    {order?.orderItems.map((item, index) => (
+                      <div key={index}>{item?.quantity || "N/A"}</div>
+                    ))}
+                  </td>
+                  <td>
+                    <div className="address-info">
+                      <div className="address-item">
+                        <span>Name:</span> {order?.address?.name || "N/A"}
+                      </div>
+                      <div className="address-item">
+                        <span>Mobile:</span> {order?.address?.mobile || "N/A"}
+                      </div>
+                      <div className="address-item">
+                        <span>Email:</span> {order?.address?.email || "N/A"}
+                      </div>
+                      <div className="address-item">
+                        <span>Pincode:</span> {order?.address?.Pincode || "N/A"}
+                      </div>
+                      <div className="address-item">
+                        <span>Landmark:</span> {order?.address?.Landmark || "N/A"}
+                      </div>
+                      <div className="address-item">
+                        <span>District:</span> {order?.address?.district || "N/A"}
+                      </div>
+                      <div className="address-item">
+                        <span>State:</span> {order?.address?.state || "N/A"}
+                      </div>
                     </div>
-                  ))}
-                </td>
-              </td>
-
-              <td>
-                {order.orderItems.map((item, index) => (
-                  <div key={index}>{item.quantity}</div>
-                ))}
-              </td>
-              <td>
-                <div className="address-info">
-                  <div className="address-item">
-                    <span>Name:</span> {order.address.name}
-                  </div>
-                  <div className="address-item">
-                    <span>Mobile:</span> {order.address.mobile}
-                  </div>
-                  <div className="address-item">
-                    <span>Email:</span> {order.address.email}
-                  </div>
-                  <div className="address-item">
-                    <span>Pincode:</span> {order.address.Pincode}
-                  </div>
-                  <div className="address-item">
-                    <span>Landmark:</span> {order.address.Landmark}
-                  </div>
-                  <div className="address-item">
-                    <span>District:</span> {order.address.district}
-                  </div>
-                  <div className="address-item">
-                    <span>State:</span> {order.address.state}
-                  </div>
-                </div>
-              </td>
-              <td>Rs {order.totalPrice}</td>
-              <td>{new Date(order.orderDate).toLocaleDateString()}</td>
-              <td>{order.status}</td>
-              <td className="action">
-                <button onClick={()=>{handalViewHistory(order._id)}}>👁️</button>
-                <button onClick={()=>{handalEditHistory(order._id)}}>✏️</button>
-                <button onClick={()=>{handalDeleteHistory(order._id)}}>❌</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <div className="pagination">
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            key={index + 1}
-            onClick={() => handlePageChange(index + 1)}
-            className={currentPage === index + 1 ? "active" : ""}
-          >
-            {index + 1}
-          </button>
-        ))}
-        {currentPage < totalPages && (
-          <button onClick={() => handlePageChange(currentPage + 1)}>
-            Next
-          </button>
-        )}
-      </div>
+                  </td>
+                  <td>Rs {order?.totalPrice || "N/A"}</td>
+                  <td>
+                    {order?.orderDate
+                      ? new Date(order.orderDate).toLocaleDateString()
+                      : "N/A"}
+                  </td>
+                  <td>{order?.status || "N/A"}</td>
+                  <td style={{display:"flex"}}>
+                    <button onClick={() => handalViewHistory(order?._id)}>👁️</button>
+                    {/* <button onClick={() => handalEditHistory(order?._id)}>Edit</button> */}
+                    <button onClick={() => handalDeleteHistory(order?._id)}>❌</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="pagination">
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index}
+                onClick={() => handlePageChange(index + 1)}
+                className={index + 1 === currentPage ? "active" : ""}
+              >
+                {index + 1}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 };

@@ -7,6 +7,8 @@ import { NavLink, useNavigate } from "react-router-dom";
 
 export const ProductList = () => {
   const [productList, setProductList] = useState([]);
+  // console.log("product List data ",productList);
+  
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const navigate = useNavigate();
@@ -14,8 +16,10 @@ export const ProductList = () => {
     const getData = async () => {
       try {
         const result = await getAllProductApi();
-        // console.log(result);
-        const products = result.data?.data || [];
+        console.log(result,"product list for length..........");
+        const products = result.data?.
+        getAllData
+         || [];
 
         if (Array.isArray(products)) {
           setProductList(products);
@@ -90,10 +94,14 @@ export const ProductList = () => {
     window.print();
   };
   const handaleDelete = async (id) => {
-    let data = await DeleteProductDetails(id);
+    
+    
+      let data = await DeleteProductDetails(id);
       // console.log(data,"getting data ...>>>.");
 
     setProductList(productList.filter((item, index) => item._id !== id));
+    
+   
   };
   const handaleviewDatails = (id) => {
     navigate(`/ProductDetails/${id}`);
@@ -106,7 +114,7 @@ export const ProductList = () => {
         <button onClick={downloadAsTxt}>Txt</button>
         <button onClick={downloadAsExcel}>Excel</button>
         <button onClick={printPage}>Print</button>
-        <input type="text" placeholder="Search" className="search" />
+        <input type="text" placeholder="Search Product List Here " className="search" />
         {/* <button className="delete">Delete</button> */}
         <button
           onClick={() => {

@@ -6,16 +6,14 @@ import { GetAllUserList } from "../../Service/Allapi";
 
 export const User = () => {
   const [userList, setUserList] = useState([]);
+  const [searchQuery, setSearchQuery] = useState(""); // State for search query
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-// console.log(userList,"userList from api ,,,,,,,,");
+  const itemsPerPage = 7;
 
   useEffect(() => {
     const getData = async () => {
       try {
         const result = await GetAllUserList();
-        // console.log(result,",,,,,,,,,,,,,,...");
-        
         const data = Array.isArray(result.data.alluser) ? result.data.alluser : [];
         setUserList(data);
       } catch (error) {
@@ -25,11 +23,20 @@ export const User = () => {
     getData();
   }, []);
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Filter userList based on the search query
+  const filteredUsers = userList.filter((user) =>
+    user.phone.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const firstPage = (currentPage - 1) * itemsPerPage;
   const lastPage = firstPage + itemsPerPage;
-  const currentItems = Array.isArray(userList) ? userList.slice(firstPage, lastPage) : [];
+  const currentItems = filteredUsers.slice(firstPage, lastPage);
 
-  const totalPages = Math.ceil(userList.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
 
   const downloadAsTxt = () => {
     const content = userList
@@ -133,8 +140,13 @@ export const User = () => {
         <button onClick={downloadAsTxt}>Txt</button>
         <button onClick={downloadAsExcel}>Excel</button>
         <button onClick={printPage}>Print</button>
-        <input type="text" placeholder="Search" className="search" />
-        {/* <button className="delete">Delete</button> */}
+        <input
+          type="text"
+          placeholder="Search by Phone Number"
+          className="search"
+          value={searchQuery}
+          onChange={handleSearchChange}
+        />
         <button className="add-new">+ Add New</button>
       </div>
       <table>
@@ -147,7 +159,7 @@ export const User = () => {
           </tr>
         </thead>
         <tbody>
-          {userList.length === 0 ? (
+          {filteredUsers.length === 0 ? (
             <tr>
               <td colSpan="4">No user available</td>
             </tr>
@@ -158,8 +170,6 @@ export const User = () => {
                 <td>{new Date(user.createdAt).toLocaleDateString()}</td>
                 <td>{new Date(user.updatedAt).toLocaleDateString()}</td>
                 <td>
-                  <button>👁️</button>
-                  <button>✏️</button>
                   <button>❌</button>
                 </td>
               </tr>

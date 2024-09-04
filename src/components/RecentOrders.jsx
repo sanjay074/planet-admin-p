@@ -4,22 +4,21 @@ import { saveAs } from "file-saver";
 import "./RecentOrders.css";
 import { useNavigate } from "react-router-dom";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { RecentOrdersDetails } from "../Service/Allapi";
+import { DeleteOrderList, RecentOrdersDetails } from "../Service/Allapi";
 
 const RecentOrders = () => {
   const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [recentOrder, setRecentOrder] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(""); // New state for search input
   const itemsPerPage = 5;
 
   useEffect(() => {
     const getData = async () => {
       try {
         const result = await RecentOrdersDetails();
-        const data = Array.isArray(result.data.myData)
-          ? result.data.myData
-          : [];
+        const data = Array.isArray(result.data.myData) ? result.data.myData : [];
         setRecentOrder(data);
       } catch (error) {
         console.error("Facing problem in getting RecentOrder", error);
@@ -28,11 +27,14 @@ const RecentOrders = () => {
     getData();
   }, []);
 
-  // Calculate total pages
   const totalPages = Math.ceil(recentOrder.length / itemsPerPage);
 
-  // Get current items
-  const currentItems = recentOrder.slice(
+  // Filter orders based on the search input
+  const filteredOrders = recentOrder.filter((order) =>
+    order._id.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const currentItems = filteredOrders.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -136,9 +138,20 @@ const RecentOrders = () => {
     navigate("/AddProduct");
   };
 
-  // const handleViewDetails = (orderId) => {
-  //   navigate(`/OrderDetails/${orderId}`);
-  // };
+  const handleViewDetails = (orderId) => {
+    navigate(`/ViewRecentOrder/${orderId}`);
+  };
+
+  const handalDeleteitem = async (id) => {
+    if (window.confirm("Are you sure you want to delete this Order?")) {
+      await DeleteOrderList(id);
+      setRecentOrder(recentOrder.filter((item) => item._id !== id));
+    }
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value); // Update the search term
+  };
 
   return (
     <div className="container">
@@ -147,13 +160,19 @@ const RecentOrders = () => {
         <button onClick={downloadAsTxt}>Txt</button>
         <button onClick={downloadAsExcel}>Excel</button>
         <button onClick={printPage}>Print</button>
-        <input type="text" placeholder="Search" className="search" />
+        <input
+          type="text"
+          placeholder="Search by Order ID"
+          className="search"
+          value={searchTerm}
+          onChange={handleSearchChange} // Handle search input change
+        />
         <button className="add-new" onClick={handleAddNew}>
           + Add New
         </button>
       </div>
 
-      {recentOrder.length === 0 ? (
+      {filteredOrders.length === 0 ? (
         <p>No available data</p>
       ) : (
         <>
@@ -171,64 +190,66 @@ const RecentOrders = () => {
               </tr>
             </thead>
             <tbody>
-              {currentItems.map((order) => (
-                <tr
-                  key={order._id}
-                  className={order._id % 2 === 0 ? "evenRow" : "oddRow"}
-                >
-                  <td>
-                  {order.orderItems.map((item, index) => (
-                    <div key={index} className="product-details">
-                      {item.productId &&
-                        item.productId.images &&
-                        item.productId.images.length > 0 && (
-                          <div>
-                            <img
-                              src={item.productId.images[0]}
-                              alt={item.productId.name}
-                              
-                            />
-                            <div className="product-name">
-                              {item.productId.name}
-                            </div>
-                          </div>
-                        )}
-                    </div>
-                  ))}
-                </td>
+              {currentItems.map((order) => {
+                const firstProductWithImage =
+                  order.orderItems.find(
+                    (item) =>
+                      item.productId &&
+                      item.productId.images &&
+                      item.productId.images.length > 0
+                  ) || {};
 
-                  <td>{order._id}</td>
-                  <td>{new Date(order.orderDate).toLocaleDateString()}</td>
-                  <td>Rs {order.totalPrice}</td>
-                  <td
-                    className={
-                      order.paymentStatus
-                        ? "payment-success"
-                        : "payment-pending"
-                    }
+                return (
+                  <tr
+                    key={order._id}
+                    className={order._id % 2 === 0 ? "evenRow" : "oddRow"}
                   >
-                    {order.paymentStatus ? "Success" : "Pending"}
-                  </td>
-                  <td>{order.paymentMethod}</td>
-                  <td
-                    onClick={() => handleViewDetails(order._id)}
-                    style={{
-                      // marginLeft: "4rem",
-                      cursor: "pointer",
-                      fontSize: "24px",
-                    }}
-                  >
-                    <MdOutlineRemoveRedEye style={{ fontSize: "24px" }} />{" "}
-                  </td>
-                  <td>
-                    <button onClick={() => handleViewDetails(order._id)}>
-                      👁️
-                    </button>
-                    <button>✏️</button>
-                    <button>❌</button>
-                  </td>
-                </tr>
-              ))}
+                    <td>
+                      {firstProductWithImage.productId ? (
+                        <div className="product-details">
+                          <img
+                            src={firstProductWithImage.productId.images[0]}
+                            alt={firstProductWithImage.productId.name}
+                          />
+                          <div className="product-name">
+                            {firstProductWithImage.productId.name}
+                          </div>
+                        </div>
+                      ) : (
+                        "No image available"
+                      )}
+                    </td>
+
+                    <td>{order._id}</td>
+                    <td>{new Date(order.orderDate).toLocaleDateString()}</td>
+                    <td>Rs {order.totalPrice}</td>
+                    <td
+                      className={
+                        order.paymentStatus
+                          ? "payment-success"
+                          : "payment-pending"
+                      }
+                    >
+                      {order.paymentStatus ? "Success" : "Pending"}
+                    </td>
+                    <td>{order.paymentMethod}</td>
+                    <td
+                      onClick={() => handleViewDetails(order._id)}
+                      style={{
+                        cursor: "pointer",
+                        fontSize: "24px",
+                      }}
+                    >
+                      <MdOutlineRemoveRedEye style={{ fontSize: "24px" }} />{" "}
+                    </td>
+                    <td>
+                      <button onClick={() => handalDeleteitem(order._id)}>
+                        ❌
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
 

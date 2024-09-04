@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from "react";
 import "./NewOrder.css";
-import { DeleteOrderList, NewProductList } from "../../Service/Allapi";
+import { DeleteOrderList, NewProductList, updateProductDetail} from "../../Service/Allapi";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 export const NewOrder = () => {
   const [orderList, setOrderList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const navaigate = useNavigate();
+  const [orderStatus, setOrderStatus] = useState({ status: "" });
+  const navigate = useNavigate();
   const itemsPerPage = 5;
-  console.log(orderList, "orderlist api >>>>>>>>.");
 
   useEffect(() => {
     const getProduct = async () => {
       try {
         const result = await NewProductList();
-        console.log(result, "result data from api");
-
-        // Ensure orderList is an array
         const data = Array.isArray(result.data.recentOrder)
           ? result.data.recentOrder
           : [];
@@ -30,10 +29,7 @@ export const NewOrder = () => {
     getProduct();
   }, []);
 
-  // Calculate total pages
   const totalPages = Math.ceil(orderList.length / itemsPerPage);
-
-  // Get current items
   const currentItems = orderList.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -43,7 +39,7 @@ export const NewOrder = () => {
     const content = orderList
       .map(
         (order) =>
-          `Order ID: ${order._id}, Address: ${order.address}, Total Price: Rs ${order.totalPrice}`
+          `Order ID: ${order._id}, Address: ${order.address?.name || "N/A"}, Total Price: Rs ${order.totalPrice || "N/A"}`
       )
       .join("\n");
     const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
@@ -64,18 +60,40 @@ export const NewOrder = () => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-  const handalOrederView = (id) => {
-    navaigate(`/OrderDetails/${id}`);
-  };
-  const handalEditDetails = (id) => {
-    navaigate(`/ViewNewOrderDetails/${id}`);
+
+  const handleOrderView = (id) => {
+    navigate(`/OrderDetails/${id}`);
   };
 
-  const handaleDelete = async (id) => {
+  const handleEditDetails = (id) => {
+    navigate(`/EditNewOrderDetails/${id}`);
+  };
+
+  const handleDelete = async (id) => {
+   const isConfirm= window.confirm(" are you sure you want to delete Order")
+   if(isConfirm){
     const data = await DeleteOrderList(id);
-    console.log(data, "delete data ...");
+    setOrderList(orderList.filter((item) => item._id !== id));
+   }
+   
+  };
 
-    setOrderList(orderList.filter((item, index) => item._id !== id));
+  const handleUpdateStatus = (e) => {
+    setOrderStatus({ status: e.target.value });
+  };
+
+  const handleUpdateProductItem = async (item_id) => {
+    try {
+      const response = await updateProductDetail(item_id, orderStatus);
+      toast.success("Order status updated successfully");
+      setOrderList((prevOrderList) =>
+        prevOrderList.map((order) =>
+          order._id === item_id ? { ...order, status: orderStatus.status } : order
+        )
+      );
+    } catch (error) {
+      toast.error("Error updating Order Status");
+    }
   };
 
   return (
@@ -86,19 +104,18 @@ export const NewOrder = () => {
           <button onClick={downloadAsExcel}>Excel</button>
           <button onClick={printPage}>Print</button>
           <input type="text" placeholder="Search" className="search" />
-          {/* <button className="delete">Delete</button> */}
           <button className="add-new">+ Add New</button>
         </div>
         <table className="order-table">
           <thead>
             <tr>
-              <th>UserId</th>
+              <th>Product Name</th>
               <th>Product ID</th>
-              <th>Product</th>
+              <th>Product Image</th>
               <th>Quantity</th>
               <th>Address</th>
-              <th>TotalPrice</th>
-              <th>OrderDate</th>
+              <th>Total Price</th>
+              <th>Order Date</th>
               <th>Status</th>
               <th>Action</th>
             </tr>
@@ -106,54 +123,60 @@ export const NewOrder = () => {
           <tbody>
             {currentItems.map((order) => (
               <tr key={order._id}>
-                <td>{order.userId}</td>
-                <td>{order._id}</td>
                 <td>
-                  {order.orderItems.map((item, index) => (
-                    <div key={index} className="product-details">
-                      {item.productId &&
-                        item.productId.images &&
-                        item.productId.images.length > 0 && (
-                          <div>
-                            <img
-                              src={item.productId.images[0]}
-                              alt={item.productId.name}
-                            />
-                            <div className="product-name">
-                              {item.productId.name}
-                            </div>
-                          </div>
-                        )}
-                    </div>
-                  ))}
+                  {order.orderItems?.[0]?.productId?.name || "N/A"}
+                </td>
+                <td>{order._id || "N/A"}</td>
+                <td>
+                  {order.orderItems?.[0]?.productId?.images?.[0] ? (
+                    <img
+                      src={order.orderItems[0].productId.images[0]}
+                      alt={order.orderItems[0].productId.name || "N/A"}
+                    />
+                  ) : "N/A"}
                 </td>
                 <td>
-                  {order.orderItems.map((item, index) => (
+                  {order.orderItems?.map((item, index) => (
                     <div key={index} className="product-quantity">
-                      {item.quantity}
+                      {item.quantity || "N/A"}
                     </div>
-                  ))}
+                  )) || "N/A"}
                 </td>
                 <td>
-                  <div>Name:{order.address.name}</div>
-                  <div> Mobile:{order.address.mobile}</div>
-                  <div>Email:{order.address.email}</div>
-                  <div>Pincode:{order.address.Pincode}</div>
-                  <div>Landmark:{order.address.Landmark}</div>
-                  <div>district:{order.address.district}</div>
-                  <div>state:{order.address.state}</div>
+                  <div>Name: {order.address?.name || "N/A"}</div>
+                  <div>Mobile: {order.address?.mobile || "N/A"}</div>
+                  <div>Email: {order.address?.email || "N/A"}</div>
+                  <div>Pincode: {order.address?.Pincode || "N/A"}</div>
+                  <div>Landmark: {order.address?.Landmark || "N/A"}</div>
+                  <div>District: {order.address?.district || "N/A"}</div>
+                  <div>State: {order.address?.state || "N/A"}</div>
                 </td>
                 <td>Rs {order.totalPrice || "N/A"}</td>
-                <td>{new Date(order.orderDate).toLocaleDateString()}</td>
-                <td>{order.status}</td>
+                <td>{order.orderDate ? new Date(order.orderDate).toLocaleDateString() : "N/A"}</td>
+                <td>{order.status || "N/A"}</td>
                 <td className="action">
-                  <button onClick={() => handalOrederView(order._id)}>
-                    👁️
+                  <button onClick={() => handleOrderView(order._id)}>👁️</button>
+                  <select
+                  className="selectopction"
+                    name="orderStatus"
+                    id="orderStatus"
+                    onChange={handleUpdateStatus}
+                    value={orderStatus.status}
+                  >
+                    <option value="">Select Item Status</option>
+                    <option value="Processed">Processed</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="inRoute">InRoute</option>
+                    <option value="Arrival">Arrival</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="Returned">Returned</option>
+                    <option value="cancelled">Cancelled</option>
+                    <option value="outofStock">OutofStock</option>
+                  </select>
+                  <button onClick={() => handleUpdateProductItem(order._id)}>
+                    Update
                   </button>
-                  <button onClick={() => handalEditDetails(order._id)}>
-                    ✏️
-                  </button>
-                  <button onClick={() => handaleDelete(order._id)}>❌</button>
+                  <button onClick={() => handleDelete(order._id)}>❌</button>
                 </td>
               </tr>
             ))}
@@ -177,6 +200,7 @@ export const NewOrder = () => {
           )}
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

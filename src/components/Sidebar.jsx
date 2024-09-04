@@ -18,8 +18,17 @@ const Sidebar = () => {
   const [hotOfferDropdown, setOfferDropdown] = useState(false);
   const [customerDropdown, setCustomerDropdown] = useState(false);
   const [categoryDropdown, setCategoryDropdown] = useState(false);
+  const [brandsDropdown, setBrandsDropdown] = useState(false);
 
   const navigate = useNavigate();
+
+const toggleBrandsDropdown = () => {
+    setBrandsDropdown(!brandsDropdown);
+  };
+
+  
+
+  
 
   const toggleCategoryDropdown = () => {
     setCategoryDropdown(!categoryDropdown);
@@ -43,7 +52,9 @@ const Sidebar = () => {
 
   const handleLogout = () => {
     
-    //navigate("/login"); 
+    localStorage.removeItem("token")
+    sessionStorage.removeItem("token")
+    navigate("/")
   };
 
   return (
@@ -94,6 +105,12 @@ const Sidebar = () => {
                   className={({ isActive }) => (isActive ? "menu-subitem active" : "menu-subitem")}
                 >
                   Add Category
+                </NavLink>
+                <NavLink
+                  to="/AddSubCategory"
+                  className={({ isActive }) => (isActive ? "menu-subitem active" : "menu-subitem")}
+                >
+                  AddSubCategory
                 </NavLink>
                 <NavLink
                   to="/CategoryList"
@@ -158,6 +175,25 @@ const Sidebar = () => {
               className={({ isActive }) => (isActive ? "menu-subitem active" : "menu-subitem")}
             >
               View Offer
+            </NavLink>
+          </div>
+        )}
+        <div className="menu-item" onClick={toggleBrandsDropdown}>
+          <FaUsers className="icon" />
+          Brands
+          {brandsDropdown ? (
+            <FaChevronDown className="expand-icon" />
+          ) : (
+            <FaChevronRight className="expand-icon" />
+          )}
+        </div>
+        {brandsDropdown && (
+          <div className="submenu">
+            <NavLink
+              to="/Brand"
+              className={({ isActive }) => (isActive ? "menu-subitem active" : "menu-subitem")}
+            >
+              Brands
             </NavLink>
           </div>
         )}

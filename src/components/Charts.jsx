@@ -1,10 +1,12 @@
 import React from 'react';
 import ReactApexChart from 'react-apexcharts';
 import './Charts.css';
-import RecentOrders from './RecentOrders';
- import AnalyticsReport from './AnalyticsReport';
+// import RecentOrders from './RecentOrders';
+//  import AnalyticsReport from './AnalyticsReport';
+import { useNavigate } from 'react-router-dom';
 
 const Charts = () => {
+  const Navigate=useNavigate()
   const salesRevenueChartOptions = {
     chart: {
       type: 'area',  
@@ -115,6 +117,10 @@ const Charts = () => {
     },
   ];
 
+
+  const handalViewPages=()=>{
+    Navigate('/ViewDetails')
+  }
   return (
     <div className="charts">
       <div className="chart-container">
@@ -123,7 +129,7 @@ const Charts = () => {
           <div className="chart-info-item">Overall Earnings: 78 Millions</div>
           <div className="chart-info-item">Overall Revenue: 60 Millions</div>
           <div className="chart-info-item">New Customers: 23k</div>
-          <button className="view-reports-button">View Reports</button>
+          <button className="view-reports-button" onClick={handalViewPages}>View Reports</button>
         </div>
         <div className="chart">
           <h3>Sales and Revenue</h3>

@@ -1,6 +1,6 @@
 .product-form {
   width: 100%;
-  height: fit-content;
+  height: max-content;
   /* margin-top: 100px; */
   padding: 20px;
   background-color: #fff;
@@ -11,7 +11,7 @@
 
 .container3 {
   /* height: max-content; */
-  margin-top: 115px;
+  margin-top: 60px;
   background-color: whitesmoke;
   color: black;
   margin-left: 5px;
@@ -114,6 +114,7 @@ input[type="file"] {
 }
 
 .address-table th, .address-table td {
+  display: flex;
   padding: 10px;
   border: 1px solid #ddd;
   text-align: left;
@@ -139,7 +140,7 @@ input[type="file"] {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  margin-top: -45px
+  padding-top: 25px;
 }
 
 .actions button, .actions input {
@@ -149,11 +150,11 @@ input[type="file"] {
   cursor: pointer;
 }
 
-.search {
+/* .search {
   flex-grow: 1;
   padding: 10px;
   border-radius: 5px;
-}
+} */
 
 .delete {
   background-color: red;

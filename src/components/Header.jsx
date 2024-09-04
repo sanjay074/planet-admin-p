@@ -1,47 +1,97 @@
-import React from 'react';
-import { AppBar, Toolbar, IconButton, Typography, Avatar, Badge } from '@mui/material';
-import { MdEmail } from 'react-icons/md'; // Import email icon from react-icons
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Avatar,
+  Badge,
+} from "@mui/material";
+import { MdEmail } from "react-icons/md";
 import { IoIosNotifications } from "react-icons/io";
-import { styled } from '@mui/material/styles';
+import { styled } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+import Planet from "../assets/Planet.svg";
+import { useEffect, useState } from "react";
+import { getAllEmail } from "../Service/Allapi";
 
-const Logo = styled('img')({
-  width: '40px',
-  height: 'auto',
-});
-
-const HeaderText = styled(Typography)({
-  marginLeft: '10px',
-  fontSize: '18px',
-  fontWeight: 'bold',
-  display: 'flex',
-  alignItems: 'center',
-  color:"black"
+const Logo = styled("img")({
+  width: "220px",
+  height: "auto",
 });
 
 const Header = () => {
+  const navigate = useNavigate();
+  const [emailData, setemailData] = useState([]);
+  console.log(emailData, "emaildata from api ////");
+  useEffect(() => {
+    const getemail = async () => {
+      try {
+        const result = await getAllEmail();
+        setemailData(
+          Array.isArray(result.data.allData) ? result.data.allData : []
+        );
+      } catch (error) {
+        console.error(`facing problem in getting email`, error);
+      }
+    };
+    getemail();
+  }, []);
+
+  const handleEmailClick = () => {
+    navigate("/ViewEmail");
+  };
+
   return (
-    <AppBar position="fixed" sx={{ top: 0, left: 0, zIndex: 1000, width: '100%', boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)' }}>
-      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Logo src="https://tse2.mm.bing.net/th?id=OIP.CEJZdk7LfdT0LWq3KwIjAwHaE7&pid=Api&P=0&h=180" alt="Logo" />
-          <HeaderText variant="h6">Planet Clothing</HeaderText>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-          <IconButton color="inherit" aria-label="Email">
-            <MdEmail />
-          </IconButton>
-          <IconButton color="inherit" aria-label="Notifications">
-            <Badge badgeContent={4} color="error">
-              <IoIosNotifications />
-            </Badge>
-          </IconButton>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Avatar src="https://tse2.mm.bing.net/th?id=OIP.CEJZdk7LfdT0LWq3KwIjAwHaE7&pid=Api&P=0&h=180" alt="Profile" sx={{ width: 30, height: 30, marginRight: '10px' }} />
-            <Typography variant="body1">Aksh</Typography>
+    <>
+      <AppBar
+        position="fixed"
+        sx={{
+          top: 0,
+          left: 0,
+          zIndex: 1000,
+          width: "100%",
+          boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <Toolbar
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Logo src={Planet} alt="Logo" />
           </div>
-        </div>
-      </Toolbar>
-    </AppBar>
+          <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+            <IconButton color="inherit" aria-label="Notifications">
+              <Badge
+                badgeContent={emailData.length}
+                color="error"
+                aria-label="Email"
+                onClick={handleEmailClick}
+              >
+                <MdEmail />
+              </Badge>
+            </IconButton>
+            <IconButton color="inherit" aria-label="Notifications">
+              <Badge badgeContent={250} color="error">
+                <IoIosNotifications />
+              </Badge>
+            </IconButton>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Avatar
+                src="https://static.vecteezy.com/system/resources/previews/012/210/707/non_2x/worker-employee-businessman-avatar-profile-icon-vector.jpg"
+                alt="Profile"
+                sx={{ width: 40, height: 30, paddingLeft: "10px" }}
+              />
+              <Typography variant="body1">Admin</Typography>
+            </div>
+          </div>
+        </Toolbar>
+      </AppBar>
+    </>
   );
 };
 

@@ -1,92 +1,218 @@
-import React, { useState } from 'react'
-import './CatagoriList.css'
-const data = {
-  categories: [
-    { title: 'Men', image: 'path/to/men.jpg', description: 'New Arrivel' },
-    { title: 'Women', image: 'path/to/women.jpg', description: 'Arrivel' },
-    { title: 'Kids', image: 'path/to/kids.jpg', description: 'New Arrivel' },
-  ],
-  subCategories: {
-    Women: [
-      { title: 'Shirt', image: 'path/to/shirt.jpg', description: '' },
-      { title: "Pent Men's Wear", image: 'path/to/pant.jpg', description: '' },
-      { title: 'Tshirt', image: 'path/to/tshirt.jpg', description: '' },
-    ],
-  },
-};
+import { useEffect, useState } from "react";
+import "./CatagoriList.css";
+import {
+ GetCategoryData,
+ getSubCategoryById,
+ DeleteCategory,
+ UpdateCategory,
+ UpdateSubCategory,
+ DeleteSubCategory
+} from "../../../Service/Allapi";
+
 export const CategoryList = () => {
+ const [categoryData, setCategoryData] = useState([]);
+ const [subCategories, setSubCategories] = useState([]);
+ const [selectedCategory, setSelectedCategory] = useState(null);
+
+ const [editingCategory, setEditingCategory] = useState(null);
+ const [newCategoryName, setNewCategoryName] = useState("");
+
+ const [editingSubCategory, setEditingSubCategory] = useState(null);
+ const [newSubCategoryName, setNewSubCategoryName] = useState("");
+
+ const getAllCategoriesDetails = async () => {
+  try {
+   const responseData = await GetCategoryData();
+   setCategoryData(responseData.data.record);
+  } catch (error) {
+   console.error("Failed to fetch categories:", error);
+  }
+ };
+
+ const getSubCategoryDataById = async (categoryId) => {
+  try {
+   const responseData = await getSubCategoryById(categoryId);
+   setSubCategories(responseData.data.data);
+   setSelectedCategory(categoryId);
+  } catch (error) {
+   console.error("Failed to fetch subcategories:", error);
+  }
+ };
+
+ const handleDeleteCategory = async (categoryId) => {
+  window.confirm("Are you sure you want to delete the Category?");
+  
+    try {
+      const data = await DeleteCategory(categoryId);
+      setCategoryData(categoryData.filter((item) => item._id !== categoryId));
+    } catch (error) {
+      console.error("Failed to delete category:", error);
+    }
+  
+};
+
+
+ const handleEditCategory = (category) => {
+  setEditingCategory(category);
+  setNewCategoryName(category.name);
+ };
+
+ const handleUpdateCategory = async () => {
+  if (editingCategory) {
+   try {
+    await UpdateCategory(editingCategory._id, { name: newCategoryName });
+    setEditingCategory(null); 
+    setNewCategoryName("");
+    getAllCategoriesDetails(); 
+   } catch (error) {
+    console.error("Failed to update category:", error);
+   }
+  }
+ };
+
+ const handleEditSubCategory = (subcategory) => {
+  setEditingSubCategory(subcategory);
+  setNewSubCategoryName(subcategory.name);
+ };
+
+ const handleUpdateSubCategory = async () => {
+  if (editingSubCategory) {
+   try {
+  
+    await UpdateSubCategory(editingSubCategory._id, updateData);
+    getSubCategoryDataById(selectedCategory); 
+    setEditingSubCategory(null); 
+    setNewSubCategoryName(""); 
+   } catch (error) {
+    console.error("Failed to update subcategory:", error);
+   }
+  }
+ };
  
 
+ const handleDeleteSubCategory = async (subcategoryId) => {
+  window.confirm("Are you sure you want to delete the SubCategory?");
  
-  return (
-   
-      <div className="category-page">
-        <div className="category-header">
-          <h1>Category</h1>
-          <div className="category-actions">
-            <button className="delete-button">Delete</button>
-            <button className="add-new-button">+ Add New</button>
-          </div>
-        </div>
-        <table className="category-table">
-          <thead>
-            <tr>
-              <th>Product Title</th>
-              <th>Image</th>
-              <th>Description</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.categories.map((category, index) => (
-              <tr key={index}>
-                <td>{category.title}</td>
-                <td><img src={category.image} alt={category.title} /></td>
-                <td>{category.description}</td>
-                <td className="action-buttons">
-                  <button>👁️</button>
-                  <button>✏️</button>
-                  <button>❌</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    try {
+      const data = await DeleteSubCategory(subcategoryId);
+      setSubCategories(subCategories.filter((item) => item._id !== subcategoryId));
+    } catch (error) {
+      console.error("Failed to delete subcategory:", error);
+    }
   
-        <div className="subcategory-section">
-        <div className="category-header" >
-        <h1>Sub Category</h1>
+};
 
-          <h3>Women</h3>
-          <button className="add-new-button">+ Add New</button>
-        </div>
-         
-          <table className="subcategory-table">
-            <thead>
-              <tr>
-                <th>Product Title</th>
-                <th>Image</th>
-                <th>Description</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.subCategories.Women.map((subcategory, index) => (
-                <tr key={index}>
-                  <td>{subcategory.title}</td>
-                  <td><img src={subcategory.image} alt={subcategory.title} /></td>
-                  <td>{subcategory.description}</td>
-                  <td className="action-buttons">
-                    <button>👁️</button>
-                    <button>✏️</button>
-                    <button>❌</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    );
-  
-}
+ useEffect(() => {
+  getAllCategoriesDetails();
+ }, []);
+
+ return (
+  <div className="category-page">
+   <div className="category-header">
+    <h1>Category</h1>
+    {/* <div className="category-actions">
+     <button
+      className="delete-button"
+      onClick={() => {
+       if (selectedCategory) {
+        handleDeleteCategory(selectedCategory);
+       }
+      }}
+      disabled={!selectedCategory} 
+     >
+      Delete
+     </button>
+     <button className="add-new-button">+ Add New</button>
+    </div> */}
+   </div>
+
+   <table className="category-table">
+    <thead>
+     <tr>
+      <th>Product Title</th>
+      <th>Action</th>
+     </tr>
+    </thead>
+    <tbody>
+     {categoryData.map((category, index) => (
+      <tr
+       onClick={() => getSubCategoryDataById(category._id)}
+       key={index}
+      >
+       <td>{category.name}</td>
+       <td className="action-buttons">
+        <button
+         onClick={() => handleDeleteCategory(category._id)}
+        >
+         ❌
+        </button>
+        <button
+         onClick={() => handleEditCategory(category)}
+        >
+         Edit
+        </button>
+       </td>
+      </tr>
+     ))}
+    </tbody>
+   </table>
+
+   {editingCategory && (
+    <div className="edit-category-form">
+     <h2>Edit Category</h2>
+     <input
+      type="text"
+      value={newCategoryName}
+      onChange={(e) => setNewCategoryName(e.target.value)}
+     />
+     <button onClick={handleUpdateCategory}>Update</button>
+     <button onClick={() => setEditingCategory(null)}>Cancel</button>
+    </div>
+   )}
+
+   <div className="subcategory-section">
+    <div className="category-header">
+     <h1>Sub Category</h1>
+     <button className="add-new-button">+ Add New</button>
+    </div>
+
+    <table className="subcategory-table">
+     <thead>
+      <tr>
+       <th>Product Title</th>
+       <th>Action</th>
+      </tr>
+     </thead>
+     <tbody>
+      {subCategories.map((subcategory, index) => (
+       <tr key={index}>
+        <td>{subcategory.name}</td>
+        <td className="action-buttons">
+         <button onClick={() => handleDeleteSubCategory(subcategory._id)}>
+          ❌
+         </button>
+         <button onClick={() => handleEditSubCategory(subcategory)}>
+          Edit
+         </button>
+        </td>
+       </tr>
+      ))}
+     </tbody>
+    </table>
+
+    {editingSubCategory && (
+     <div className="edit-subcategory-form">
+      <h2>Edit Subcategory</h2>
+      <input
+       type="text"
+       value={newSubCategoryName}
+       onChange={(e) => setNewSubCategoryName(e.target.value)}
+      />
+      <button onClick={handleUpdateSubCategory}>Update</button>
+      <button onClick={() => setEditingSubCategory(null)}>Cancel</button>
+     </div>
+    )}
+   </div>
+  </div>
+ );
+};

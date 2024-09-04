@@ -1,19 +1,15 @@
 .product-form1 {
-  width: 138%;
-  height: 100vh; 
-  /* margin: ;
-  /* min-width: 100%; */
-  /* max-height: 100vh; */
+  width: 150%; 
+  height: auto; 
   padding: 20px;
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   color: black;
-  /* margin: 10px 255px 0px 10px; */
-  margin-top: 50px;
-  margin-left: 5px;
+  margin: 50px auto 0; /* Centers the form horizontally */
+  box-sizing: border-box; /* Includes padding in width/height */
 }
 
-.product-form h2 {
+.product-form1 h2 {
   text-align: start;
   margin-bottom: 20px;
 }
@@ -21,20 +17,23 @@
 .form-sections {
   display: flex;
   gap: 20px;
+  flex-wrap: wrap; /* Allows wrapping on smaller screens */
 }
 
-.form-left, .form-right {
+.form-left,
+.form-right {
   flex: 1;
+  min-width: 0; /* Prevents overflow */
 }
 
 .form-group1 {
   margin-bottom: 20px;
-  position: relative;
 }
 
 .form-row {
   display: flex;
   gap: 20px;
+  flex-wrap: wrap; /* Allows wrapping on smaller screens */
   margin-bottom: 20px;
 }
 
@@ -76,7 +75,7 @@
 
 .save-button {
   display: block;
-  margin: 0 auto;
+  margin: 20px auto 0; /* Adds margin for better spacing */
 }
 
 small {

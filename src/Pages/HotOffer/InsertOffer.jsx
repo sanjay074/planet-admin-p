@@ -1,105 +1,121 @@
-import React, { useState } from 'react';
-import { TextField, Button } from '@mui/material';
-import './InsertOffer.css';
+import { useState } from 'react';
+import './InsertOffer.css'; 
+import { OfferPost } from '../../Service/Allapi';
 
 export const InsertOffer = () => {
-  const [sliderName, setSliderName] = useState("");
-  const [sliderUrl, setSliderUrl] = useState("");
-  const [sliderImage, setSliderImage] = useState(null);
+  const [subbrand, setSubbrand] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [images, setImages] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
 
-  const handleOnChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === 'sliderImage') {
-      setSliderImage(files[0]);
-    } else {
-      if (name === 'sliderName') setSliderName(value);
-      if (name === 'sliderUrl') setSliderUrl(value);
-    }
+  const handleSubbrandChange = (event) => {
+    setSubbrand(event.target.value);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const newFormData = new FormData();
-    newFormData.append('sliderName', sliderName);
-    newFormData.append('sliderUrl', sliderUrl);
-    if (sliderImage) newFormData.append('sliderImage', sliderImage);
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files);
+    setImages(files);
+
+    const previews = files.map(file => URL.createObjectURL(file));
+    setImagePreviews(previews);
+  };
+
+  const handleSaveProduct = async (event) => {
+    event.preventDefault();
+
+    setLoading(true);
+    setError('');
 
     try {
-      const response = await PostOfferData(newFormData); 
-      if (response) {
-        alert('Offer data added successfully');
-        setSliderName("");
-        setSliderUrl("");
-        setSliderImage(null);
+      const formData = new FormData();
+      formData.append('name', subbrand);
+      images.forEach((file) => {
+        formData.append('offerImage', file);
+      });
+
+      console.log('FormData entries before sending:');
+      for (const [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
       }
+
+      await OfferPost(formData);
+      alert('Offers saved successfully!');
+      setSubbrand('');
+      setImages([]);
+      setImagePreviews([]);
     } catch (error) {
-      console.log('Error uploading data:', error);
+      console.error('Error saving offers:', error);
+      setError('Failed to save offers. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="form-container8">
-      <h2>Add Offer</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group8">
-          <TextField
-            name="sliderName"
-            label="Slider Name"
-            variant="outlined"
-            fullWidth
-            value={sliderName}
-            onChange={handleOnChange}
-            required
-          />
-        </div>
-        <div className="form-group8">
-          <TextField
-        
-            name="sliderUrl"
-            label="Slider URL"
-            variant="outlined"
-            fullWidth
-            value={sliderUrl}
-            onChange={handleOnChange}
-            required
-          />
-        </div>
-        <div className="upload-images8">
-        <label htmlFor="image-upload" className="upload-label8">Upload Image</label>
-          <input
-            type="file"
-            name="sliderImage"
-            accept="image/*"
-            id="image-upload"
-            onChange={handleOnChange}
-          />
-          <div className="upload-box8">
-            {sliderImage ? (
-              <img
-                src={URL.createObjectURL(sliderImage)}
-                alt="Preview"
-                className="upload-preview8"
-              />
-            ) : (
-              <label htmlFor="image-upload">Upload Image</label>
-            )}
+    <div className="container108">
+      <div className="form-container108">
+        <h1 className="title08">Add Offers</h1>
+        <form onSubmit={handleSaveProduct} className="form08">
+          <div className="form-group08">
+            <label className="label08">Offers Name</label>
+            <input
+              type="text"
+              className="input08"
+              placeholder="Enter Offers Name"
+              value={subbrand}
+              onChange={handleSubbrandChange}
+            />
           </div>
-        </div>
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          className="submit-button8"
-        >
-          Submit
-        </Button>
-      </form>
+
+          <div className="upload-section08">
+            <h4 className="upload-title08">Upload Images</h4>
+            <div className="upload-container08">
+              <div className="upload-box08">
+                <label htmlFor="imageUpload" className="upload-label08">
+                  Click to upload
+                </label>
+                <input
+                  type="file"
+                  id="imageUpload"
+                  multiple
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="file-input08"
+                />
+              </div>
+
+              {imagePreviews.map((preview, index) => (
+                <div key={index} className="image-preview08">
+                  <img
+                    src={preview}
+                    alt={`Preview ${index}`}
+                    className="preview-image08"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      URL.revokeObjectURL(preview);
+                      setImagePreviews(imagePreviews.filter((_, i) => i !== index));
+                      setImages(images.filter((_, i) => i !== index));
+                    }}
+                    className="remove-button08"
+                  >
+                    X
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="form-group08">
+            <button className="button08" type="submit" disabled={loading}>
+              {loading ? 'Saving...' : 'Save Offers'}
+            </button>
+            {error && <p className="error08">{error}</p>}
+          </div>
+        </form>
+      </div>
     </div>
   );
-};
-
-// Dummy function to simulate API call
-const PostOfferData = async (data) => {
-  console.log('Posting data:', data);
-  return Promise.resolve(true);
 };

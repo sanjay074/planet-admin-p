@@ -28,7 +28,11 @@ import { OrderDetails } from './Pages/Order/OrderDetails';
 import { ViewNewOrderDetails } from './Pages/Order/ViewNewOrderDetails';
 import { EditOrderHistory } from './Pages/Order/OrderHistory/EditOrderHistory';
 import { ViewOrderList } from './Pages/Order/OrderHistory/ViewOrderList';
-
+import { AddSubCategory } from './Pages/Product/Category/AddSubCategory';
+import { ViewRecentOrder } from './components/ViewRecentOrder';
+import { Brand } from './Pages/Brands/Brand';
+import { ViewDetails } from './Pages/ViewDetails/ViewDetails';
+import { ViewEmail } from './Pages/ViewEmail/ViewEmail';
 
 const App = () => {
   return (
@@ -51,6 +55,8 @@ const App = () => {
                   <Route path='/ProductList' element={<ProductList/>}/>
                   <Route path='/Addcategory' element={<Addcategory/>}/>
                   <Route path='/CategoryList' element={<CategoryList/>}/>
+                  <Route path='/AddSubCategory' element={<AddSubCategory/>}/>
+                  <Route path='/ViewDetails' element={<ViewDetails/>}/>
                   {/* <Route path='/Categories' element={<Categories/>}/> */}
                   <Route path='/NewOrder' element={<NewOrder/>}/>
                   <Route path='/OrderDetails/:id'element={<OrderDetails/>}/>
@@ -64,8 +70,9 @@ const App = () => {
                   <Route path='/TrackDetails' element={<TrackDetails/>}/>
                   <Route path='/ViewOffer' element={<ViewOffer/>}/>
                   <Route path='/User' element={<User/>}/>
-
-
+                  <Route path='/ViewRecentOrder/:id' element={<ViewRecentOrder/>}/>
+          <Route path='/Brand' element={<Brand/>}/>
+          <Route path='/ViewEmail' element={<ViewEmail/>}/>
                   {/* <Route path="/products/add" element={<AddProduct />} />
                   <Route path="/products/list" element={<ProductList />} />
                   <Route path="/products/category" element={<Category />} />

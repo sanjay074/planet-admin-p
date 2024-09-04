@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import './OrderDetails.css'
-import { ViewOrderHistory } from '../../Service/Allapi';
-export const OrderDetails = () => {
+import { ViewRecentOrderDetails } from '../Service/Allapi';
+import './ViewRecentOrder.css'
+export const ViewRecentOrder = () => {
   const { id } = useParams();
   const [order, setOrder] = useState(null); 
 
   useEffect(() => {
     const getValue = async () => {
       try {
-        const result = await ViewOrderHistory(id);
+        const result = await ViewRecentOrderDetails(id);
         if (result) {
           setOrder(result.data.getsingleData);
         }
@@ -36,9 +36,10 @@ export const OrderDetails = () => {
     { label: "Name", value: order.address?.name },
     { label: "State", value: order.address?.state },
     { label: "Status", value: order.status },
-    // { label: "Created At", value: new Date(order.createdAt).toLocaleString() },
-    // { label: "Updated At", value: new Date(order.updatedAt).toLocaleString() },
-    
+    { label: "Created At", value: new Date(order.createdAt).toLocaleString() },
+    { label: "Updated At", value: new Date(order.updatedAt).toLocaleString() },
+    { label: "Payment Status", value: order.paymentStatus }, // Assuming these fields exist in your API response
+    { label: "Payment Method", value: order.paymentMethod },
   ];
 
   return (
@@ -72,7 +73,7 @@ export const OrderDetails = () => {
                 <div className="classname09-order-value">{detail.value}</div>
               </div>
             ))}
-            <Link to='/NewOrder'>
+            <Link to='/Dashboard'>
               <button className='classname09-btn'>Back</button>
             </Link>
           </div>
